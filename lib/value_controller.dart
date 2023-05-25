@@ -16,6 +16,6 @@ class ValueController extends GetxController {
     /** Vai atualizar o valor da nossa definedValue que será 
      * refletido no nosso GetBuilder 
     */
-    //update();
+    // update();
   }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_getx_widget.dart';
+import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:getxintro/value_controller.dart';
 
 void main() {
@@ -32,17 +32,14 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('Criou Arvore');
-
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           // Valor
-          GetX<ValueController>(
-            init: valueController,
-            builder: (ctrl) {
-              return Text('Valor definido: ${ctrl.definedValue}');
+          Obx(
+            () {
+              return Text('Valor definido: ${valueController.definedValue}');
             },
           ),
           // Campo
@@ -53,10 +50,9 @@ class HomePage extends StatelessWidget {
             ),
           ),
           // Botão
-          GetX<ValueController>(
-            init: valueController,
-            builder: (ctrl) {
-              return ctrl.isLoading.value
+          Obx(
+            () {
+              return valueController.isLoading.value
                   ? const CircularProgressIndicator()
                   : ElevatedButton(
                       onPressed: () {
