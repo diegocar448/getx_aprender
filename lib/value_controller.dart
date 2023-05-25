@@ -1,21 +1,21 @@
 import 'package:get/get.dart';
 
 class ValueController extends GetxController {
-  String definedValue = '';
+  /// Aqui temos uma variavel observavel
+  RxString definedValue = ''.obs;
 
-  bool isLoading = false;
+  RxBool isLoading = false.obs;
 
-  void setValue(String value) async {
-    isLoading = true;
-    update();
+  Future<void> setValue(String newValue) async {
+    isLoading.value = true;
 
     await Future.delayed(const Duration(seconds: 2));
-    definedValue = value;
-    isLoading = false;
+    definedValue.value = newValue;
+    isLoading.value = false;
 
     /** Vai atualizar o valor da nossa definedValue que será 
      * refletido no nosso GetBuilder 
     */
-    update();
+    //update();
   }
 }
