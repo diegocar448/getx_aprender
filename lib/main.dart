@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_state_manager/src/simple/get_state.dart';
+import 'package:getxintro/value_controller.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,53 +18,54 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const HomePage(title: 'Flutter Demo Home Page'),
+      home: HomePage(),
     );
   }
 }
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+class HomePage extends StatelessWidget {
+  // HomePage({super.key});
+  HomePage({Key? key}) : super(key: key);
 
   final textController = TextEditingController();
-  String definedValue = '';
+  final valueController = ValueController();
+
   @override
   Widget build(BuildContext context) {
+    print('Criou Arvore');
+
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           // Valor
-          Text('Valor definido: $definedValue'),
+          GetBuilder<ValueController>(
+            init: valueController,
+            initState: (_) {},
+            builder: (ctrl) {
+              print('Criou Getx');
+              return Text('Valor definido: ${ctrl.definedValue}');
+            },
+          ),
           // Campo
           TextField(
             controller: textController,
           ),
           // Botão
-          ElevatedButton(
-            onPressed: () {
-              String value = textController.text;
+          GetBuilder<ValueController>(
+            init: valueController,
+            builder: (ctrl) {
+              return ctrl.isLoading
+                  ? const CircularProgressIndicator()
+                  : ElevatedButton(
+                      onPressed: () {
+                        String value = textController.text;
 
-              setState(() {
-                definedValue = value;
-              });
+                        valueController.setValue(value);
+                      },
+                      child: const Text('Confirmar'),
+                    );
             },
-            child: const Text('Confirmar'),
           )
         ],
       ),
