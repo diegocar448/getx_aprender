@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:get/get.dart';
 import 'package:getxintro/user_controller.dart';
 
 void main() {
+  // Aqui adicionamos a nossa injeção de dependecias no dispositivo
+  // evitando ter que ficar passando sempre pelo construtor
+  //Get.put<UserController>(UserController());
+
+  //Aqui so vai injetar na memoria quando for solicitado
+  Get.lazyPut<UserController>(() => UserController());
   runApp(const MyApp());
 }
 
@@ -28,12 +34,9 @@ class HomePage extends StatelessWidget {
 
   final nameController = TextEditingController();
   final ageController = TextEditingController();
-  final userController = UserController();
 
-  TextStyle commonStyle() => const TextStyle(
-        fontSize: 17,
-        fontWeight: FontWeight.w500,
-      );
+  // Aqui ele busca o userController injetado em outra classe anterior
+  final UserController userController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -45,16 +48,16 @@ class HomePage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // Apresentação Nome
-            Obx(() => Text(
-                  'Nome: ${userController.user.value.name}',
-                  style: commonStyle(),
-                )),
+            // Obx(() => Text(
+            //       'Nome: ${userController.user.value.name}',
+            //       style: commonStyle(),
+            //     )),
 
-            // Apresentação Idade
-            Obx(() => Text(
-                  'Idade: ${userController.user.value.age}',
-                  style: commonStyle(),
-                )),
+            // // Apresentação Idade
+            // Obx(() => Text(
+            //       'Idade: ${userController.user.value.age}',
+            //       style: commonStyle(),
+            //     )),
 
             const Divider(
               thickness: 1.5,
@@ -73,7 +76,7 @@ class HomePage extends StatelessWidget {
                 Expanded(
                   child: TextField(
                     controller: nameController,
-                    decoration: const InputDecoration(),
+                    decoration: const InputDecoration(labelText: 'Nome'),
                   ),
                 ),
 
@@ -85,6 +88,9 @@ class HomePage extends StatelessWidget {
                 ),
               ],
             ),
+            const SizedBox(
+              height: 10,
+            ),
             Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
@@ -92,7 +98,7 @@ class HomePage extends StatelessWidget {
                 Expanded(
                   child: TextField(
                     controller: ageController,
-                    decoration: const InputDecoration(),
+                    decoration: const InputDecoration(labelText: 'Idade'),
                   ),
                 ),
 
@@ -109,6 +115,54 @@ class HomePage extends StatelessWidget {
             const SizedBox(
               height: 10,
             ),
+
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) {
+                  return DataScreen();
+                }));
+              },
+              child: const Text('Tela de dados'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class DataScreen extends StatelessWidget {
+  //const DataScreen({super.key});
+
+  DataScreen({
+    Key? key,
+  }) : super(key: key);
+  TextStyle commonStyle() => const TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.w700,
+      );
+
+  final UserController controller = Get.find();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Dados'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Obx(() => Text(
+                  'Nome: ${controller.user.value.name}',
+                  style: commonStyle(),
+                )),
+            Obx(() => Text(
+                  'Idade: ${controller.user.value.age}',
+                  style: commonStyle(),
+                )),
           ],
         ),
       ),
