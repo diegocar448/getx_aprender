@@ -132,7 +132,7 @@ class HomePage extends StatelessWidget {
   }
 }
 
-class DataScreen extends StatelessWidget {
+class DataScreen extends GetView<UserController> {
   //const DataScreen({super.key});
 
   DataScreen({
@@ -143,6 +143,7 @@ class DataScreen extends StatelessWidget {
         fontWeight: FontWeight.w700,
       );
 
+  @override
   final UserController controller = Get.find();
 
   @override
@@ -155,14 +156,37 @@ class DataScreen extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Obx(() => Text(
-                  'Nome: ${controller.user.value.name}',
-                  style: commonStyle(),
-                )),
-            Obx(() => Text(
-                  'Idade: ${controller.user.value.age}',
-                  style: commonStyle(),
-                )),
+            // passamos o init quando nao estamos trabalhando com injecao de dependencia
+            Obx(
+              () => Text(
+                'Nome: ${controller.user.value.name}',
+                style: commonStyle(),
+              ),
+            ),
+            Obx(
+              () => Text(
+                'Idade: ${controller.user.value.age}',
+                style: commonStyle(),
+              ),
+            ),
+            // GetX<UserController>(
+            //   builder: (controller) {
+            //     return Text(
+            //       'Nome: ${controller.user.value.name}',
+            //       style: commonStyle(),
+            //     );
+            //   },
+            // ),
+
+            // // passamos o init quando nao estamos trabalhando com injecao de dependencia
+            // GetX<UserController>(
+            //   builder: (controller) {
+            //     return Text(
+            //       'Idade: ${controller.user.value.age}',
+            //       style: commonStyle(),
+            //     );
+            //   },
+            // )
           ],
         ),
       ),
